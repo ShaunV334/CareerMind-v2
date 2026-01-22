@@ -68,7 +68,9 @@ export function Navbar() {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/pricing" legacyBehavior passHref>
+              <Link href="/pricing">
+                {/* @next-codemod-error This Link previously used the now removed `legacyBehavior` prop, and has a child that might not be an anchor. The codemod bailed out of lifting the child props to the Link. Check that the child component does not render an anchor, and potentially move the props manually to Link. */
+                }
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   Pricing
                 </NavigationMenuLink>
@@ -76,7 +78,9 @@ export function Navbar() {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/about" legacyBehavior passHref>
+              <Link href="/about">
+                {/* @next-codemod-error This Link previously used the now removed `legacyBehavior` prop, and has a child that might not be an anchor. The codemod bailed out of lifting the child props to the Link. Check that the child component does not render an anchor, and potentially move the props manually to Link. */
+                }
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                   About
                 </NavigationMenuLink>
@@ -109,7 +113,7 @@ export function Navbar() {
         </div>
       </div>
     </header>
-  )
+  );
 }
 
 const ListItem = React.forwardRef<
