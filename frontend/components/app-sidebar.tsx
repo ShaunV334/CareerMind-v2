@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Frame, Map, PieChart } from "lucide-react"
+import { FileText, Briefcase, Users, BookOpen, HelpCircle, ListTodo, BarChart3 } from "lucide-react"
 
 import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
@@ -17,19 +17,39 @@ import {
 const data = {
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
+      name: "Home",
+      url: "/dashboard",
+      icon: BarChart3,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
+      name: "Resume Builder",
+      url: "/dashboard/resume",
+      icon: FileText,
     },
     {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      name: "Interview Prep",
+      url: "/dashboard/interview",
+      icon: Briefcase,
+    },
+    {
+      name: "Group Discussions",
+      url: "/dashboard/group-discussions",
+      icon: Users,
+    },
+    {
+      name: "Study Materials",
+      url: "/dashboard/study-materials",
+      icon: BookOpen,
+    },
+    {
+      name: "Question Bank",
+      url: "/dashboard/question-bank",
+      icon: HelpCircle,
+    },
+    {
+      name: "Weekly Tasks",
+      url: "/dashboard/weekly-tasks",
+      icon: ListTodo,
     },
   ],
 }

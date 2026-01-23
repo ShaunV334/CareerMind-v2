@@ -20,7 +20,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(() => {
+    // Check if we have a token on initial render
+    if (typeof window !== "undefined") {
+      return !!localStorage.getItem("token")
+    }
+    return true
+  })
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const fetchUser = async () => {

@@ -3,6 +3,7 @@ import { Hono } from "hono"
 // simple manual CORS middleware (avoids external dependency)
 import dotenv from "dotenv"
 import auth from "./routes/auth.js"
+import tasks from "./routes/tasks.js"
 import { connect } from "./db.js"
 
 dotenv.config()
@@ -25,6 +26,9 @@ app.get("/", (c) => c.text("Hello Hono!"))
 
 // mount auth routes under /api/auth
 app.route("/api/auth", auth)
+
+// mount tasks routes under /api/tasks
+app.route("/api/tasks", tasks)
 
 // connect to DB at startup
 connect().catch((err: unknown) => console.error("DB connect error", err))
