@@ -1,15 +1,58 @@
 "use client"
 
+import { useState } from 'react'
+import ResumeList from '@/components/ResumeList'
+import ResumeBuilder from '@/components/ResumeBuilder'
+import { ResumeData } from '@/hooks/useResumeData'
+
+interface SavedResume {
+  id: string;
+  name: string;
+  createdAt: string;
+  data: ResumeData;
+}
+
 export default function ResumePage() {
+  const [currentMode, setCurrentMode] = useState<'list' | 'edit'>('list')
+  const [selectedResume, setSelectedResume] = useState<ResumeData | null>(null)
+
+  const handleCreateNew = () => {
+    setCurrentMode('edit')
+  }
+
+  const handleEdit = (resume: SavedResume) => {
+    setSelectedResume({
+      id: resume.id,
+      name: resume.name,
+      ...resume.data,
+    })
+    setCurrentMode('edit')
+  }
+
+  const handleDelete = () => {
+    setSelectedResume(null)
+  }
+
+  const handleBackToList = () => {
+    setCurrentMode('list')
+    setSelectedResume(null)
+  }
+
+  if (currentMode === 'list') {
+    return (
+      <ResumeList
+        onCreateNew={handleCreateNew}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
+    )
+  }
+
   return (
-    <>
-      <div className="flex items-center gap-2 px-4 mb-4">
-        <h1 className="text-lg font-semibold">Resume Builder</h1>
-      </div>
-      <div className="bg-card rounded-lg border p-6">
-        <h2 className="text-2xl font-bold mb-4">Resume Builder</h2>
-        <p className="text-muted-foreground">Create and manage your professional resumes with AI-powered suggestions.</p>
-      </div>
-    </>
+    <ResumeBuilder
+      initialResume={selectedResume}
+      onBack={handleBackToList}
+      resumeName={selectedResume?.name}
+    />
   )
 }

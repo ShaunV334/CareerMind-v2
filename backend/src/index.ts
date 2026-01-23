@@ -4,6 +4,7 @@ import { Hono } from "hono"
 import dotenv from "dotenv"
 import auth from "./routes/auth.js"
 import tasks from "./routes/tasks.js"
+import resumes from "./routes/resumes.js"
 import { connect } from "./db.js"
 
 dotenv.config()
@@ -29,6 +30,9 @@ app.route("/api/auth", auth)
 
 // mount tasks routes under /api/tasks
 app.route("/api/tasks", tasks)
+
+// mount resumes routes under /api/resumes
+app.route("/api/resumes", resumes)
 
 // connect to DB at startup
 connect().catch((err: unknown) => console.error("DB connect error", err))
