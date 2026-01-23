@@ -126,7 +126,7 @@ export const useTasks = () => {
     }
   };
 
-  const updateTask = async (date: string, taskId: number, updates: Partial<Task>): Promise<void> => {
+  const updateTask = async (date: string, taskId: string, updates: Partial<Task>): Promise<void> => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found');
@@ -146,7 +146,7 @@ export const useTasks = () => {
       
       setTasks(prev => ({
         ...prev,
-        [date]: prev[date].map(t => t.id === taskId.toString() ? updatedTask : t),
+        [date]: prev[date].map(t => t.id === taskId ? updatedTask : t),
       }));
     } catch (err: any) {
       setError(err.message);
@@ -154,7 +154,7 @@ export const useTasks = () => {
     }
   };
 
-  const deleteTask = async (date: string, taskId: number): Promise<void> => {
+  const deleteTask = async (date: string, taskId: string): Promise<void> => {
     try {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No token found');
@@ -171,7 +171,7 @@ export const useTasks = () => {
 
       setTasks(prev => ({
         ...prev,
-        [date]: prev[date].filter(task => task.id !== taskId.toString()),
+        [date]: prev[date].filter(task => task.id !== taskId),
       }));
     } catch (err: any) {
       setError(err.message);
