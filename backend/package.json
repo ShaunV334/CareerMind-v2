@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "seed": "tsx src/seeds/seed.ts"
   },
   "dependencies": {
     "@hono/node-server": "^1.19.8",
@@ -13,7 +14,8 @@
     "hono": "^4.11.3",
     "jsonwebtoken": "^9.0.3",
     "mongodb": "^5.9.0",
-    "pdfkit": "^0.17.2"
+    "pdfkit": "^0.17.2",
+    "puppeteer": "^24.36.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
