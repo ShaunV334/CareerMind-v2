@@ -1,5 +1,4 @@
 import { useState, useCallback } from "react";
-import { useAuth } from "./useAuth";
 
 export interface Question {
   id: string;
@@ -13,7 +12,6 @@ export interface Question {
 }
 
 export function useQuestions() {
-  const { token } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -39,7 +37,7 @@ export function useQuestions() {
         const res = await fetch(
           `http://localhost:3000/api/questions?${params}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { "Content-Type": "application/json" },
           }
         );
         if (!res.ok) throw new Error("Failed to fetch questions");
@@ -51,7 +49,7 @@ export function useQuestions() {
         setLoading(false);
       }
     },
-    [token]
+    []
   );
 
   const fetchQuestion = useCallback(
@@ -62,7 +60,7 @@ export function useQuestions() {
         const res = await fetch(
           `http://localhost:3000/api/questions/${id}?mode=${mode}`,
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { "Content-Type": "application/json" },
           }
         );
         if (!res.ok) throw new Error("Failed to fetch question");
@@ -74,7 +72,7 @@ export function useQuestions() {
         setLoading(false);
       }
     },
-    [token]
+    []
   );
 
   const recordAttempt = useCallback(
@@ -102,7 +100,7 @@ export function useQuestions() {
         throw err;
       }
     },
-    [token]
+    []
   );
 
   const fetchAttemptHistory = useCallback(
@@ -121,21 +119,24 @@ export function useQuestions() {
         throw err;
       }
     },
-    [token]
+    []
   );
 
   const fetchCategories = useCallback(async () => {
     try {
-      const res = await fetch(`http://localhost:3000/api/questions/categories`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        `http://localhost:3000/api/questions/categories`,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
       if (!res.ok) throw new Error("Failed to fetch categories");
       return await res.json();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error fetching categories");
       throw err;
     }
-  }, [token]);
+  }, []);
 
   return {
     loading,

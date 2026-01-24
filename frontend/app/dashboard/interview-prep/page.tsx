@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 
-export default function InterviewPage() {
+export default function InterviewPrepPage() {
   const { fetchQuestions, fetchQuestion, submitAnswer, loading, error } =
     useInterview();
   const [questions, setQuestions] = useState<any[]>([]);

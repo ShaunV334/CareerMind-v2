@@ -6,6 +6,7 @@ import auth from "./routes/auth.js"
 import tasks from "./routes/tasks.js"
 import resumes from "./routes/resumes.js"
 import questions from "./routes/questions.js"
+import interview from "./routes/interview.js"
 import { connect } from "./db.js"
 
 dotenv.config()
@@ -37,6 +38,9 @@ app.route("/api/resumes", resumes)
 
 // mount questions routes under /api/questions
 app.route("/api/questions", questions)
+
+// mount interview routes under /api/interview
+app.route("/api/interview", interview)
 
 // connect to DB at startup
 connect().catch((err: unknown) => console.error("DB connect error", err))

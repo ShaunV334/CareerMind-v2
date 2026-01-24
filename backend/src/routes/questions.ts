@@ -1,12 +1,12 @@
 import { Hono } from "hono";
+import { ObjectId } from "mongodb";
 import { getDb } from "../db";
 import { getUser } from "../middleware";
 
 const app = new Hono();
 
 // Get all questions (with filtering and pagination)
-app.get("/", getUser, async (c) => {
-  const userId = c.get("userId");
+app.get("/", async (c) => {
   const { category, difficulty, search, limit = 20, skip = 0 } = c.req.query();
 
   try {
@@ -44,8 +44,20 @@ app.get("/", getUser, async (c) => {
   }
 });
 
+// Get categories (must be before /:id to avoid being matched as an ID)
+app.get("/categories", async (c) => {
+  try {
+    const db = getDb();
+    const collection = db.collection("questions");
+    const categories = await collection.distinct("category");
+    return c.json({ categories });
+  } catch (error) {
+    return c.json({ error: "Failed to fetch categories" }, 500);
+  }
+});
+
 // Get question by ID (includes answer for studying)
-app.get("/:id", getUser, async (c) => {
+app.get("/:id", async (c) => {
   const { id } = c.req.param();
   const mode = c.req.query("mode"); // "study" or "practice"
 
@@ -53,7 +65,7 @@ app.get("/:id", getUser, async (c) => {
     const db = getDb();
     const collection = db.collection("questions");
     const question = await collection.findOne({
-      _id: new (await import("mongodb")).ObjectId(id),
+      _id: new ObjectId(id),
     });
 
     if (!question) return c.json({ error: "Question not found" }, 404);
@@ -108,7 +120,7 @@ app.put("/:id", getUser, async (c) => {
     const db = getDb();
     const collection = db.collection("questions");
     const result = await collection.updateOne(
-      { _id: new (await import("mongodb")).ObjectId(id) },
+      { _id: new ObjectId(id) },
       {
         $set: {
           ...body,
@@ -134,7 +146,7 @@ app.delete("/:id", getUser, async (c) => {
     const db = getDb();
     const collection = db.collection("questions");
     const result = await collection.deleteOne({
-      _id: new (await import("mongodb")).ObjectId(id),
+      _id: new ObjectId(id),
     });
 
     if (result.deletedCount === 0)
@@ -168,7 +180,7 @@ app.post("/:id/attempt", getUser, async (c) => {
 
     // Update question stats
     await collection.updateOne(
-      { _id: new (await import("mongodb")).ObjectId(id) },
+      { _id: new ObjectId(id) },
       {
         $inc: {
           attempts: 1,
@@ -214,18 +226,6 @@ app.get("/:id/history", getUser, async (c) => {
     return c.json(stats);
   } catch (error) {
     return c.json({ error: "Failed to fetch history" }, 500);
-  }
-});
-
-// Get categories
-app.get("/categories", getUser, async (c) => {
-  try {
-    const db = getDb();
-    const collection = db.collection("questions");
-    const categories = await collection.distinct("category");
-    return c.json({ categories });
-  } catch (error) {
-    return c.json({ error: "Failed to fetch categories" }, 500);
   }
 });
 

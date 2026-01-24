@@ -57,14 +57,14 @@ export function Navbar() {
                   <ListItem href="/aptitude" title="Aptitude Tests">
                     Practice questions and mock tests.
                   </ListItem>
-                  <ListItem href="/dashboard/questions" title="Question Bank">
+                  <ListItem href="/dashboard/question-bank" title="Question Bank">
                     DSA and coding interview questions.
+                  </ListItem>
+                  <ListItem href="/dashboard/interview" title="Interview Prep">
+                    AI-powered interview practice with feedback.
                   </ListItem>
                   <ListItem href="/resume" title="Resume Builder">
                     Build ATS-friendly resumes.
-                  </ListItem>
-                  <ListItem href="/interview" title="Interview Prep">
-                    Mock interviews and GD preparation.
                   </ListItem>
                 </ul>
               </NavigationMenuContent>
