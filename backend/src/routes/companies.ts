@@ -311,4 +311,44 @@ companies.get("/trending", async (c) => {
   }
 });
 
+/**
+ * GET /companies/:companyId/syllabus
+ * Get company-specific interview syllabus with topics
+ */
+companies.get("/:companyId/syllabus", async (c) => {
+  try {
+    const db = getDb();
+    const { companyId } = c.req.param();
+
+    // First, try to find by ObjectId, then by slug
+    let syllabus;
+    try {
+      const objectId = new ObjectId(companyId);
+      syllabus = await db.collection("companySyllabuses").findOne({
+        companyId: objectId
+      });
+    } catch (e) {
+      // If not a valid ObjectId, search by slug
+      const company = await db.collection("companies").findOne({
+        slug: companyId.toLowerCase()
+      });
+      
+      if (company) {
+        syllabus = await db.collection("companySyllabuses").findOne({
+          companyId: company._id
+        });
+      }
+    }
+
+    if (!syllabus) {
+      return c.json({ error: "Syllabus not found" }, 404);
+    }
+
+    return c.json(syllabus);
+  } catch (error) {
+    console.error("Error fetching syllabus:", error);
+    return c.json({ error: "Failed to fetch syllabus" }, 500);
+  }
+});
+
 export default companies;
