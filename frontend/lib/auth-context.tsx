@@ -39,7 +39,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/auth/me`,
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"}/auth/me`,
         {
           headers: { Authorization: `Bearer ${token}` },
           credentials: "include",
@@ -94,3 +94,4 @@ export function useAuth() {
   }
   return context
 }
+

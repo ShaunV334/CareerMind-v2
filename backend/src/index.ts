@@ -7,6 +7,9 @@ import tasks from "./routes/tasks.js"
 import resumes from "./routes/resumes.js"
 import questions from "./routes/questions.js"
 import interview from "./routes/interview.js"
+import aptitude from "./routes/aptitude.js"
+import companies from "./routes/companies.js"
+import experiences from "./routes/experiences.js"
 import { connect } from "./db.js"
 
 dotenv.config()
@@ -17,7 +20,7 @@ app.use('*', async (c, next) => {
   const origin = c.req.header('origin') || '*'
   c.header('Access-Control-Allow-Origin', origin)
   c.header('Access-Control-Allow-Credentials', 'true')
-  c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  c.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, x-user-id')
   c.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
   if (c.req.method === 'OPTIONS') {
     return c.text('ok')
@@ -42,7 +45,14 @@ app.route("/api/questions", questions)
 // mount interview routes under /api/interview
 app.route("/api/interview", interview)
 
-// connect to DB at startup
+// mount aptitude routes under /api/aptitude
+app.route("/api/aptitude", aptitude)
+
+// mount companies routes under /api/companies
+app.route("/api/companies", companies)
+
+// mount experiences routes under /api/experiences
+app.route("/api/experiences", experiences)
 connect().catch((err: unknown) => console.error("DB connect error", err))
 
 serve(

@@ -5,6 +5,11 @@ import dotenv from "dotenv";
 import auth from "./routes/auth.js";
 import tasks from "./routes/tasks.js";
 import resumes from "./routes/resumes.js";
+import questions from "./routes/questions.js";
+import interview from "./routes/interview.js";
+import aptitude from "./routes/aptitude.js";
+import companies from "./routes/companies.js";
+import experiences from "./routes/experiences.js";
 import { connect } from "./db.js";
 dotenv.config();
 const app = new Hono();
@@ -26,7 +31,16 @@ app.route("/api/auth", auth);
 app.route("/api/tasks", tasks);
 // mount resumes routes under /api/resumes
 app.route("/api/resumes", resumes);
-// connect to DB at startup
+// mount questions routes under /api/questions
+app.route("/api/questions", questions);
+// mount interview routes under /api/interview
+app.route("/api/interview", interview);
+// mount aptitude routes under /api/aptitude
+app.route("/api/aptitude", aptitude);
+// mount companies routes under /api/companies
+app.route("/api/companies", companies);
+// mount experiences routes under /api/experiences
+app.route("/api/experiences", experiences);
 connect().catch((err) => console.error("DB connect error", err));
 serve({
     fetch: app.fetch,

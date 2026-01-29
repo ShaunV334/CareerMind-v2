@@ -57,7 +57,9 @@ auth.post("/signup", async (c) => {
 
 auth.post("/login", async (c) => {
   try {
+    console.log("=== LOGIN ENDPOINT HIT ===")
     const body = await c.req.json()
+    console.log("Request body:", body)
     const { email, password } = body as { email?: string; password?: string }
     if (!email || !password) return c.json({ error: "Missing email or password" }, 400)
 
@@ -72,7 +74,9 @@ auth.post("/login", async (c) => {
     const token = jwt.sign({ userId: user._id.toString(), email: user.email }, JWT_SECRET, { expiresIn: "7d" })
     // set httpOnly cookie
     c.header("Set-Cookie", makeCookie(token))
-    return c.json({ token, user: { id: user._id.toString(), email: user.email, name: user.name } })
+    const response = { token, user: { id: user._id.toString(), email: user.email, name: user.name } }
+    console.log("Sending login response:", response)
+    return c.json(response)
   } catch (err: any) {
     console.error(err)
     return c.json({ error: "Internal server error" }, 500)

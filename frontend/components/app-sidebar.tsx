@@ -1,9 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { FileText, Briefcase, Users, BookOpen, HelpCircle, ListTodo, BarChart3 } from "lucide-react"
+import { FileText, Briefcase, Users, BookOpen, HelpCircle, ListTodo, BarChart3, Zap, Lightbulb, Brain } from "lucide-react"
 
 import { NavProjects } from "@/components/nav-projects"
+import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import {
   Sidebar,
@@ -27,29 +28,137 @@ const data = {
       icon: FileText,
     },
     {
-      name: "Interview Prep",
-      url: "/dashboard/interview",
-      icon: Briefcase,
+      name: "Weekly Tasks",
+      url: "/dashboard/weekly-tasks",
+      icon: ListTodo,
+    },
+  ],
+  nav: [
+    {
+      title: "Aptitude",
+      url: "/dashboard/aptitude",
+      icon: Brain,
+      items: [
+        {
+          title: "Quantitative",
+          url: "/dashboard/aptitude/quantitative",
+        },
+        {
+          title: "Logical",
+          url: "/dashboard/aptitude/logical",
+        },
+        {
+          title: "Verbal",
+          url: "/dashboard/aptitude/verbal",
+        },
+        {
+          title: "Data Interpretation",
+          url: "/dashboard/aptitude/data-interpretation",
+        },
+        {
+          title: "Psychometric Test",
+          url: "/dashboard/aptitude/psychometric",
+        },
+      ],
     },
     {
-      name: "Group Discussions",
+      title: "Syllabus",
+      url: "/dashboard/syllabus",
+      icon: BookOpen,
+      items: [
+        {
+          title: "All Syllabuses",
+          url: "/dashboard/syllabus",
+        },
+        {
+          title: "Google",
+          url: "/dashboard/syllabus/google",
+        },
+        {
+          title: "Amazon",
+          url: "/dashboard/syllabus/amazon",
+        },
+        {
+          title: "Microsoft",
+          url: "/dashboard/syllabus/microsoft",
+        },
+        {
+          title: "Accenture",
+          url: "/dashboard/syllabus/accenture",
+        },
+        {
+          title: "TCS",
+          url: "/dashboard/syllabus/tcs",
+        },
+        {
+          title: "Infosys",
+          url: "/dashboard/syllabus/infosys",
+        },
+      ],
+    },
+    {
+      title: "Interview Prep",
+      url: "/dashboard/interview-prep",
+      icon: Briefcase,
+      items: [
+        {
+          title: "All Companies",
+          url: "/dashboard/interview-prep",
+        },
+        {
+          title: "Google",
+          url: "/dashboard/interview-prep/google",
+        },
+        {
+          title: "Amazon",
+          url: "/dashboard/interview-prep/amazon",
+        },
+        {
+          title: "Microsoft",
+          url: "/dashboard/interview-prep/microsoft",
+        },
+        {
+          title: "Accenture",
+          url: "/dashboard/interview-prep/accenture",
+        },
+      ],
+    },
+    {
+      title: "Interview Exp.",
+      url: "/dashboard/interviews",
+      icon: Lightbulb,
+      items: [
+        {
+          title: "All Experiences",
+          url: "/dashboard/interviews",
+        },
+        {
+          title: "Google",
+          url: "/dashboard/interviews/google",
+        },
+        {
+          title: "Amazon",
+          url: "/dashboard/interviews/amazon",
+        },
+        {
+          title: "Microsoft",
+          url: "/dashboard/interviews/microsoft",
+        },
+        {
+          title: "Success Stories",
+          url: "/dashboard/interviews/success-stories",
+        },
+      ],
+    },
+    {
+      title: "Group Discussions",
       url: "/dashboard/group-discussions",
       icon: Users,
     },
     {
-      name: "Study Materials",
+      title: "Study Materials",
       url: "/dashboard/study-materials",
       icon: BookOpen,
-    },
-    {
-      name: "Question Bank",
-      url: "/dashboard/question-bank",
-      icon: HelpCircle,
-    },
-    {
-      name: "Weekly Tasks",
-      url: "/dashboard/weekly-tasks",
-      icon: ListTodo,
     },
   ],
 }
@@ -70,6 +179,7 @@ export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sideb
       </SidebarHeader>
       <SidebarContent>
         <NavProjects projects={data.projects} />
+        <NavMain items={data.nav} />
       </SidebarContent>
       <SidebarFooter>
       </SidebarFooter>
