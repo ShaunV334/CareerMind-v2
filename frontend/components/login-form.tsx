@@ -33,24 +33,38 @@ export function LoginForm({
     const password = formData.get("password") as string
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/auth/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({ email, password }),
-        }
-      )
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"}/auth/login`
+      console.log("Attempting login to:", apiUrl)
+      
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      })
+
+      console.log("Response status:", response.status)
+      console.log("Response headers:", response.headers)
+
+      let data
+      try {
+        const text = await response.text()
+        console.log("Response text:", text)
+        data = JSON.parse(text)
+      } catch (parseError) {
+        console.error("JSON parse error:", parseError)
+        throw new Error("Invalid response from server")
+      }
 
       if (!response.ok) {
-        const data = await response.json()
         throw new Error(data.error || "Login failed")
       }
 
-      const data = await response.json()
+      console.log("Login successful, saving token")
       localStorage.setItem("token", data.token)
+      console.log("Calling refetchUser()")
       await refetchUser()
+      console.log("refetchUser completed, pushing to dashboard")
       router.push("/dashboard")
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred")
