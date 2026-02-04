@@ -3,7 +3,6 @@
 import * as React from "react"
 import { FileText, Briefcase, Users, BookOpen, HelpCircle, ListTodo, BarChart3, Zap, Lightbulb, Brain } from "lucide-react"
 
-import { NavProjects } from "@/components/nav-projects"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -16,24 +15,22 @@ import {
 
 // This is sample data.
 const data = {
-  projects: [
+  nav: [
     {
-      name: "Home",
+      title: "Home",
       url: "/dashboard",
       icon: BarChart3,
     },
     {
-      name: "Resume Builder",
+      title: "Resume Builder",
       url: "/dashboard/resume",
       icon: FileText,
     },
     {
-      name: "Weekly Tasks",
+      title: "Weekly Tasks",
       url: "/dashboard/weekly-tasks",
       icon: ListTodo,
     },
-  ],
-  nav: [
     {
       title: "Aptitude",
       url: "/dashboard/aptitude",
@@ -173,12 +170,11 @@ export function AppSidebar({ user, ...props }: React.ComponentProps<typeof Sideb
           <NavUser user={{ 
             name: displayUser.name, 
             email: displayUser.email, 
-            avatar: "/avatars/default.jpg" 
+            avatar: displayUser.profilePhoto || "/avatars/default.jpg" 
           }} />
         )}
       </SidebarHeader>
       <SidebarContent>
-        <NavProjects projects={data.projects} />
         <NavMain items={data.nav} />
       </SidebarContent>
       <SidebarFooter>

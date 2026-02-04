@@ -24,10 +24,56 @@ import {
   Clock,
 } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { motion, useScroll, useTransform, inView } from 'motion/react'
 
 export function Hero() {
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null)
+
+  const { scrollY } = useScroll()
+  const y1 = useTransform(scrollY, [0, 500], [0, 150])
+  const y2 = useTransform(scrollY, [0, 500], [0, -150])
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.3
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    }
+  }
+
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.8 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.5,
+        ease: "easeOut"
+      }
+    },
+    hover: {
+      scale: 1.05,
+      transition: {
+        duration: 0.3
+      }
+    }
+  }
 
   const features = [
     {
@@ -163,76 +209,126 @@ export function Hero() {
       {/* Hero Section */}
       <section className="relative pt-32 pb-24 overflow-hidden">
         <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 dark:opacity-10 dark:bg-blue-600 animate-blob"></div>
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 dark:opacity-10 dark:bg-purple-600 animate-blob animation-delay-2000"></div>
-          <div className="absolute -bottom-8 left-1/2 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 dark:opacity-10 dark:bg-pink-600 animate-blob animation-delay-4000"></div>
+          <motion.div 
+            style={{ y: y1 }}
+            className="absolute top-0 left-1/4 w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 dark:opacity-10 dark:bg-blue-600"
+          ></motion.div>
+          <motion.div 
+            style={{ y: y2 }}
+            className="absolute top-0 right-1/4 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 dark:opacity-10 dark:bg-purple-600"
+          ></motion.div>
+          <motion.div 
+            style={{ y: y1 }}
+            className="absolute -bottom-8 left-1/2 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 dark:opacity-10 dark:bg-pink-600"
+          ></motion.div>
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center">
+          <motion.div 
+            className="max-w-4xl mx-auto text-center"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
             {/* Badge */}
-            <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-200 px-4 py-2 rounded-full text-sm font-medium mb-8 border border-blue-200 dark:border-blue-800">
-              <Sparkles className="h-4 w-4" />
-              Powered by Gemini AI
-            </div>
+            <motion.div variants={itemVariants}>
+              <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-200 px-4 py-2 rounded-full text-sm font-medium mb-8 border border-blue-200 dark:border-blue-800">
+                <Sparkles className="h-4 w-4" />
+                Powered by Gemini AI
+              </div>
+            </motion.div>
 
             {/* Main Headline */}
-            <h1 className="text-6xl md:text-7xl font-bold tracking-tight mb-6 dark:text-white">
+            <motion.h1 
+              variants={itemVariants}
+              className="text-6xl md:text-7xl font-bold tracking-tight mb-6 dark:text-white"
+            >
               Land Your Dream{' '}
               <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-400 dark:via-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
                 Tech Job
               </span>
-            </h1>
+            </motion.h1>
 
             {/* Subtitle */}
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+            <motion.p 
+              variants={itemVariants}
+              className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
+            >
               Master interviews, build impressive resumes, and ace technical assessments with AI-powered coaching. Your complete career companion.
-            </p>
+            </motion.p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-              <Button 
-                size="lg" 
-                asChild 
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all h-12 px-8 text-lg"
-              >
-                <Link href="/signup">
-                  Start Free Today
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                asChild
-                className="dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-900 h-12 px-8 text-lg"
-              >
-                <a href="#features">
-                  <Play className="mr-2 h-5 w-5" />
-                  Explore Features
-                </a>
-              </Button>
-            </div>
+            <motion.div 
+              variants={itemVariants}
+              className="flex flex-col sm:flex-row gap-4 justify-center mb-16"
+            >
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button 
+                  size="lg" 
+                  asChild 
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all h-12 px-8 text-lg"
+                >
+                  <Link href="/signup">
+                    Start Free Today
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  asChild
+                  className="dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-900 h-12 px-8 text-lg"
+                >
+                  <a href="#features">
+                    <Play className="mr-2 h-5 w-5" />
+                    Explore Features
+                  </a>
+                </Button>
+              </motion.div>
+            </motion.div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-gray-200 dark:border-gray-800">
+            <motion.div 
+              variants={containerVariants}
+              className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-gray-200 dark:border-gray-800"
+            >
               {stats.map((stat, idx) => (
-                <div key={idx} className="text-center">
-                  <div className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+                <motion.div 
+                  key={idx} 
+                  variants={itemVariants}
+                  className="text-center"
+                  whileHover={{ scale: 1.1 }}
+                >
+                  <motion.div 
+                    className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2"
+                    initial={{ opacity: 0, scale: 0 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.5 + idx * 0.1, duration: 0.5, type: "spring" }}
+                  >
                     {stat.number}
-                  </div>
+                  </motion.div>
                   <div className="text-gray-600 dark:text-gray-400">{stat.label}</div>
-                </div>
+                </motion.div>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         </div>
       </section>
 
       {/* Features Section */}
       <section id="features" className="py-24 bg-gray-50 dark:bg-slate-900/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6 }}
+          >
             <Badge className="mb-4 bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-200 hover:bg-blue-100 dark:hover:bg-blue-950">
               <Zap className="h-3 w-3 mr-2" />
               Core Features
@@ -241,36 +337,52 @@ export function Hero() {
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Comprehensive tools designed to guide you from resume to job offer
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, idx) => (
-              <Card
+              <motion.div
                 key={idx}
-                className={`transition-all duration-300 hover:shadow-xl dark:border-gray-800 dark:bg-slate-800/50 cursor-pointer ${
-                  hoveredFeature === idx ? 'translate-y-[-4px]' : ''
-                }`}
-                onMouseEnter={() => setHoveredFeature(idx)}
-                onMouseLeave={() => setHoveredFeature(null)}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                whileHover={{ y: -8, transition: { duration: 0.3 } }}
               >
-                <CardHeader>
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mb-4 text-white dark:from-blue-400 dark:to-purple-400">
-                    {feature.icon}
-                  </div>
-                  <CardTitle className="dark:text-white">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
-                  <ul className="space-y-2">
-                    {feature.benefits.map((benefit, bidx) => (
-                      <li key={bidx} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-                        <CheckCircle className="h-4 w-4 text-green-500 dark:text-green-400 flex-shrink-0" />
-                        {benefit}
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+                <Card
+                  className={`transition-all duration-300 hover:shadow-xl dark:border-gray-800 dark:bg-slate-800/50 cursor-pointer h-full`}
+                  onMouseEnter={() => setHoveredFeature(idx)}
+                  onMouseLeave={() => setHoveredFeature(null)}
+                >
+                  <CardHeader>
+                    <motion.div 
+                      className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center mb-4 text-white dark:from-blue-400 dark:to-purple-400"
+                      whileHover={{ rotate: 360, scale: 1.1 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      {feature.icon}
+                    </motion.div>
+                    <CardTitle className="dark:text-white">{feature.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
+                    <ul className="space-y-2">
+                      {feature.benefits.map((benefit, bidx) => (
+                        <motion.li 
+                          key={bidx} 
+                          className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={hoveredFeature === idx ? { opacity: 1, x: 0 } : { opacity: 1, x: 0 }}
+                          transition={{ delay: bidx * 0.1 }}
+                        >
+                          <CheckCircle className="h-4 w-4 text-green-500 dark:text-green-400 flex-shrink-0" />
+                          {benefit}
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -279,17 +391,32 @@ export function Hero() {
       {/* Companies Section */}
       <section className="py-20 dark:bg-slate-900">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <motion.div 
+            className="text-center mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
+          >
             <h3 className="text-2xl font-bold mb-4 dark:text-white">Trusted by Candidates Preparing for</h3>
-          </div>
+          </motion.div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {companies.map((company, idx) => (
-              <Card key={idx} className="flex items-center justify-center h-24 dark:border-gray-800 dark:bg-slate-800/50 hover:shadow-lg transition-shadow">
-                <CardContent className="flex flex-col items-center gap-2 p-4">
-                  <span className="text-3xl">{company.icon}</span>
-                  <span className="text-sm font-semibold text-center dark:text-gray-300">{company.name}</span>
-                </CardContent>
-              </Card>
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.5 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                whileHover={{ scale: 1.1, rotate: [0, -5, 5, -5, 0] }}
+              >
+                <Card className="flex items-center justify-center h-24 dark:border-gray-800 dark:bg-slate-800/50 hover:shadow-lg transition-shadow">
+                  <CardContent className="flex flex-col items-center gap-2 p-4">
+                    <span className="text-3xl">{company.icon}</span>
+                    <span className="text-sm font-semibold text-center dark:text-gray-300">{company.name}</span>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -450,7 +577,13 @@ export function Hero() {
       {/* Testimonials Section */}
       <section className="py-24 dark:bg-slate-900">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6 }}
+          >
             <Badge className="mb-4 bg-pink-100 dark:bg-pink-950 text-pink-800 dark:text-pink-200 hover:bg-pink-100 dark:hover:bg-pink-950">
               <MessageSquare className="h-3 w-3 mr-2" />
               Success Stories
@@ -459,24 +592,47 @@ export function Hero() {
             <p className="text-xl text-gray-600 dark:text-gray-400">
               Join thousands who landed their dream jobs
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, idx) => (
-              <Card key={idx} className="dark:border-gray-800 dark:bg-slate-800/50">
-                <CardContent className="pt-6">
-                  <div className="flex items-center gap-1 mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <span key={i}>⭐</span>
-                    ))}
-                  </div>
-                  <p className="text-gray-700 dark:text-gray-300 mb-4 italic">"{testimonial.content}"</p>
-                  <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                    <p className="font-semibold dark:text-white">{testimonial.author}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.role}</p>
-                  </div>
-                </CardContent>
-              </Card>
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: idx * 0.2 }}
+                whileHover={{ y: -10, transition: { duration: 0.3 } }}
+              >
+                <Card className="dark:border-gray-800 dark:bg-slate-800/50 h-full">
+                  <CardContent className="pt-6">
+                    <motion.div 
+                      className="flex items-center gap-1 mb-4"
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 + idx * 0.2, duration: 0.5 }}
+                    >
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <motion.span 
+                          key={i}
+                          initial={{ scale: 0, rotate: -180 }}
+                          whileInView={{ scale: 1, rotate: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.5 + idx * 0.2 + i * 0.1, type: "spring", stiffness: 200 }}
+                        >
+                          ⭐
+                        </motion.span>
+                      ))}
+                    </motion.div>
+                    <p className="text-gray-700 dark:text-gray-300 mb-4 italic">"{testimonial.content}"</p>
+                    <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                      <p className="font-semibold dark:text-white">{testimonial.author}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.role}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -485,7 +641,13 @@ export function Hero() {
       {/* Pricing Section */}
       <section className="py-24 bg-gray-50 dark:bg-slate-900/50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <motion.div 
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.6 }}
+          >
             <Badge className="mb-4 bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-200 hover:bg-orange-100 dark:hover:bg-orange-950">
               <Award className="h-3 w-3 mr-2" />
               Pricing
@@ -494,63 +656,95 @@ export function Hero() {
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Choose the plan that fits your preparation journey
             </p>
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             {pricingPlans.map((plan, idx) => (
-              <Card
+              <motion.div
                 key={idx}
-                className={`transition-all duration-300 flex flex-col ${
-                  plan.highlighted
-                    ? 'ring-2 ring-blue-600 dark:ring-blue-400 scale-105 shadow-2xl dark:bg-slate-800 dark:border-blue-500'
-                    : 'dark:border-gray-800 dark:bg-slate-800/50'
-                }`}
+                initial={{ opacity: 0, y: 50, scale: 0.9 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.5, delay: idx * 0.15 }}
+                whileHover={{ 
+                  scale: plan.highlighted ? 1.08 : 1.05, 
+                  transition: { duration: 0.3 } 
+                }}
               >
-                {plan.highlighted && (
-                  <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-t-lg dark:from-blue-500 dark:to-purple-500">
-                    <span className="text-sm font-semibold">Most Popular</span>
-                  </div>
-                )}
-                <CardHeader>
-                  <CardTitle className="dark:text-white">{plan.name}</CardTitle>
-                  <CardDescription className="dark:text-gray-400">{plan.description}</CardDescription>
-                  <div className="mt-4">
-                    <span className="text-4xl font-bold dark:text-white">{plan.price}</span>
-                    <span className="text-gray-600 dark:text-gray-400">{plan.period}</span>
-                  </div>
-                </CardHeader>
-                <CardContent className="flex-grow space-y-6">
-                  <Button
-                    asChild
-                    className={`w-full ${
-                      plan.highlighted
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white'
-                        : 'dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-900'
-                    }`}
-                    variant={plan.highlighted ? 'default' : 'outline'}
-                  >
-                    <Link href="/signup">
-                      {plan.cta}
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, fidx) => (
-                      <li key={fidx} className="flex items-start gap-3">
-                        <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
+                <Card
+                  className={`transition-all duration-300 flex flex-col ${
+                    plan.highlighted
+                      ? 'ring-2 ring-blue-600 dark:ring-blue-400 shadow-2xl dark:bg-slate-800 dark:border-blue-500'
+                      : 'dark:border-gray-800 dark:bg-slate-800/50'
+                  }`}
+                >
+                  {plan.highlighted && (
+                    <motion.div 
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-t-lg dark:from-blue-500 dark:to-purple-500"
+                      initial={{ opacity: 0, y: -20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5, duration: 0.5 }}
+                    >
+                      <span className="text-sm font-semibold">Most Popular</span>
+                    </motion.div>
+                  )}
+                  <CardHeader>
+                    <CardTitle className="dark:text-white">{plan.name}</CardTitle>
+                    <CardDescription className="dark:text-gray-400">{plan.description}</CardDescription>
+                    <div className="mt-4">
+                      <span className="text-4xl font-bold dark:text-white">{plan.price}</span>
+                      <span className="text-gray-600 dark:text-gray-400">{plan.period}</span>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-grow space-y-6">
+                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                      <Button
+                        asChild
+                        className={`w-full ${
+                          plan.highlighted
+                            ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white'
+                            : 'dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-900'
+                        }`}
+                        variant={plan.highlighted ? 'default' : 'outline'}
+                      >
+                        <Link href="/signup">
+                          {plan.cta}
+                          <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </motion.div>
+                    <ul className="space-y-3">
+                      {plan.features.map((feature, fidx) => (
+                        <motion.li 
+                          key={fidx} 
+                          className="flex items-start gap-3"
+                          initial={{ opacity: 0, x: -20 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: 0.3 + idx * 0.15 + fidx * 0.05 }}
+                        >
+                          <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                          <span className="text-sm text-gray-700 dark:text-gray-300">{feature}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
 
-          <div className="text-center mt-12">
+          <motion.div 
+            className="text-center mt-12"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 1, duration: 0.5 }}
+          >
             <p className="text-gray-600 dark:text-gray-400 mb-4">All plans come with a 7-day free trial</p>
             <p className="text-sm text-gray-500 dark:text-gray-500">No credit card required • Cancel anytime</p>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -596,21 +790,59 @@ export function Hero() {
       {/* CTA Section */}
       <section className="py-24 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 dark:from-blue-900 dark:via-purple-900 dark:to-pink-900">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Transform Your Career?</h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of successful candidates who used CareerMind to land their dream jobs at top tech companies.
-          </p>
-          <Button
-            size="lg"
-            asChild
-            className="bg-white hover:bg-gray-100 text-blue-600 dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-white shadow-xl h-12 px-8 text-lg"
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.6 }}
           >
-            <Link href="/signup">
-              Start Your Free Trial Today
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-          <p className="text-blue-100 mt-4">No credit card required • 7 days free • Cancel anytime</p>
+            <motion.h2 
+              className="text-4xl md:text-5xl font-bold text-white mb-6"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+            >
+              Ready to Transform Your Career?
+            </motion.h2>
+            <motion.p 
+              className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4, duration: 0.6 }}
+            >
+              Join thousands of successful candidates who used CareerMind to land their dream jobs at top tech companies.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6, duration: 0.6 }}
+            >
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  size="lg"
+                  asChild
+                  className="bg-white hover:bg-gray-100 text-blue-600 dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-white shadow-xl h-12 px-8 text-lg"
+                >
+                  <Link href="/signup">
+                    Start Your Free Trial Today
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </motion.div>
+            </motion.div>
+            <motion.p 
+              className="text-blue-100 mt-4"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.8, duration: 0.6 }}
+            >
+              No credit card required • 7 days free • Cancel anytime
+            </motion.p>
+          </motion.div>
         </div>
       </section>
 
