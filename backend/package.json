@@ -5,10 +5,10 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "seed": "tsx src/seeds/seed.ts",
-    "seed-interview": "tsx src/seeds/seed-interview.ts"
+    "seed": "tsx src/seeds/mongodb-seed.ts"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.20",
     "@ai-sdk/openai": "^3.0.18",
     "@hono/node-server": "^1.19.8",
     "ai": "^6.0.48",

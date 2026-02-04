@@ -351,4 +351,44 @@ companies.get("/:companyId/syllabus", async (c) => {
   }
 });
 
+/**
+ * GET /companies/:companyId/interview-prep
+ * Get company-specific interview preparation guide
+ */
+companies.get("/:companyId/interview-prep", async (c) => {
+  try {
+    const db = getDb();
+    const { companyId } = c.req.param();
+
+    // First, try to find by ObjectId, then by slug
+    let prepGuide;
+    try {
+      const objectId = new ObjectId(companyId);
+      prepGuide = await db.collection("interviewPrepGuides").findOne({
+        companyId: objectId
+      });
+    } catch (e) {
+      // If not a valid ObjectId, search by slug
+      const company = await db.collection("companies").findOne({
+        slug: companyId.toLowerCase()
+      });
+      
+      if (company) {
+        prepGuide = await db.collection("interviewPrepGuides").findOne({
+          companyId: company._id
+        });
+      }
+    }
+
+    if (!prepGuide) {
+      return c.json({ error: "Interview prep guide not found" }, 404);
+    }
+
+    return c.json(prepGuide);
+  } catch (error) {
+    console.error("Error fetching interview prep guide:", error);
+    return c.json({ error: "Failed to fetch interview prep guide" }, 500);
+  }
+});
+
 export default companies;

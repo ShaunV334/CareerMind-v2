@@ -24,7 +24,7 @@ export function NavMain({
 }: {
   items: {
     title: string
-    url: string
+    url?: string
     icon?: LucideIcon
     isActive?: boolean
     items?: {
@@ -35,7 +35,6 @@ export function NavMain({
 }) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible
@@ -46,14 +45,23 @@ export function NavMain({
             <SidebarMenuItem>
               <div className="flex items-center">
                 {/* Main link - navigates to the module page */}
-                <Link href={item.url} className="flex-1">
-                  <SidebarMenuButton tooltip={item.title} asChild>
+                {item.url ? (
+                  <Link href={item.url} className="flex-1">
+                    <SidebarMenuButton tooltip={item.title} asChild>
+                      <div className="cursor-pointer">
+                        {item.icon && <item.icon />}
+                        <span>{item.title}</span>
+                      </div>
+                    </SidebarMenuButton>
+                  </Link>
+                ) : (
+                  <SidebarMenuButton tooltip={item.title}>
                     <div className="cursor-pointer">
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
                     </div>
                   </SidebarMenuButton>
-                </Link>
+                )}
                 
                 {/* Chevron - only triggers expand/collapse */}
                 {item.items && item.items.length > 0 && (

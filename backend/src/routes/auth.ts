@@ -98,7 +98,7 @@ auth.get("/me", async (c) => {
     const users = db.collection("users")
     const user = await users.findOne({ _id: new ObjectId((payload as any).userId) }) as any
     if (!user) return c.json({ error: "User not found" }, 404)
-    return c.json({ user: { id: user._id.toString(), email: user.email, name: user.name } })
+    return c.json({ user: { id: user._id.toString(), email: user.email, name: user.name, profilePhoto: user.profilePhoto || null } })
   } catch (err: any) {
     console.error(err)
     return c.json({ error: "Internal server error" }, 500)

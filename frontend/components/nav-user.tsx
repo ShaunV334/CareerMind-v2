@@ -1,14 +1,14 @@
 "use client"
 
 import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
+  Moon,
+  Sun,
+  User,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 
 import {
   Avatar,
@@ -18,7 +18,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -38,18 +37,28 @@ export function NavUser({
   user: {
     name: string
     email: string
-    avatar: string
+    avatar?: string
   }
 }) {
   const { isMobile } = useSidebar()
   const { logout } = useAuth()
   const router = useRouter()
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleLogout = () => {
     logout()
     setTimeout(() => {
       router.push("/hero")
     }, 100)
+  }
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark')
   }
 
   const getInitials = (name: string) => {
@@ -80,7 +89,6 @@ export function NavUser({
                 <span className="truncate font-medium">{user.name}</span>
                 <span className="truncate text-xs">{user.email}</span>
               </div>
-              <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -104,30 +112,28 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
+            {mounted && (
+              <DropdownMenuItem onClick={toggleTheme}>
+                {theme === 'dark' ? (
+                  <>
+                    <Sun className="h-4 w-4" />
+                    Light Mode
+                  </>
+                ) : (
+                  <>
+                    <Moon className="h-4 w-4" />
+                    Dark Mode
+                  </>
+                )}
               </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
+            )}
+            <DropdownMenuItem onClick={() => router.push("/dashboard/profile")}>
+              <User className="h-4 w-4" />
+              Profile
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
-              <LogOut />
+              <LogOut className="h-4 w-4" />
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
