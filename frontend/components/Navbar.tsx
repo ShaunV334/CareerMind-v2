@@ -20,6 +20,11 @@ import { Button } from "@/components/ui/button"
 
 export function Navbar() {
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark")
@@ -94,17 +99,19 @@ export function Navbar() {
 
         <div className="ml-auto flex items-center space-x-4">
           {/* 🌙 Simple theme toggle */}
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="rounded-md border p-2 transition-colors hover:bg-accent"
-          >
-            {theme === "dark" ? (
-              <Sun className="h-4 w-4" />
-            ) : (
-              <Moon className="h-4 w-4" />
-            )}
-          </button>
+          {mounted && (
+            <button
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              className="rounded-md border p-2 transition-colors hover:bg-accent"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-4 w-4" />
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
+            </button>
+          )}
 
           <Link href="/login" className="text-sm font-medium hover:underline">
             Login

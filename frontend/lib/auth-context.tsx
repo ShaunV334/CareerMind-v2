@@ -51,7 +51,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.removeItem("token")
         setUser(null)
       } else {
-        const data = await response.json()
+        const text = await response.text()
+        const data = JSON.parse(text)
         setUser(data.user)
       }
     } catch (error) {

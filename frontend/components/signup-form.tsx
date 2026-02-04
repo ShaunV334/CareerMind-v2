@@ -42,7 +42,7 @@ export function SignupForm({
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/auth/signup`,
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api"}/auth/signup`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -51,12 +51,13 @@ export function SignupForm({
         }
       )
 
+      const text = await response.text()
+      const data = JSON.parse(text)
+
       if (!response.ok) {
-        const data = await response.json()
         throw new Error(data.error || "Signup failed")
       }
 
-      const data = await response.json()
       localStorage.setItem("token", data.token)
       await refetchUser()
       router.push("/dashboard")
