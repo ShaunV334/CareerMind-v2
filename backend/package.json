@@ -9,6 +9,7 @@
     "seed-interview": "tsx src/seeds/seed-interview.ts"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.20",
     "@ai-sdk/openai": "^3.0.18",
     "@hono/node-server": "^1.19.8",
     "ai": "^6.0.48",

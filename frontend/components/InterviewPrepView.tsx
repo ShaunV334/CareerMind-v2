@@ -413,16 +413,18 @@ export default function InterviewPrepView({
             <Play className="w-8 h-8 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-1" />
             <div className="flex-1">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                Practice with Mock Interviews
+                Practice with AI Mock Interviews
               </h3>
               <p className="text-gray-700 dark:text-gray-300 mb-4">
                 Take {data.mockInterviewCount} AI-powered mock interviews tailored to {data.name}'s
-                interview style. Get instant feedback and improvement suggestions.
+                interview style. Get real-time feedback, question evaluation, and improvement suggestions.
               </p>
-              <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white">
-                Start Mock Interview
-                <Play className="w-4 h-4 ml-2" />
-              </Button>
+              <Link href={`/dashboard/interview-prep/${companyId}/mock`}>
+                <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600 text-white">
+                  Start Mock Interview
+                  <Play className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
           </div>
         </Card>

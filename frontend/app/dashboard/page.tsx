@@ -52,6 +52,7 @@ export default function DashboardHome() {
   )
 }
 
+
 function StatCard({ title, value, description }: { title: string; value: string; description: string }) {
   return (
     <div className="bg-card rounded-lg border p-4">
