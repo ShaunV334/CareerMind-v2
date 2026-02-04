@@ -11,7 +11,7 @@ import { AlertCircle, CheckCircle2, Upload, Loader2 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
 
 export default function ProfilePage() {
-  const { user } = useAuth()
+  const { user, refetchUser } = useAuth()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isMounted, setIsMounted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -174,6 +174,8 @@ export default function ProfilePage() {
 
       const data = await response.json()
       setSuccess('Profile updated successfully!')
+      // Refetch user data to update the navbar profile picture
+      await refetchUser()
       setTimeout(() => setSuccess(''), 3000)
     } catch (err: any) {
       setError(err.message || 'Failed to update profile')
