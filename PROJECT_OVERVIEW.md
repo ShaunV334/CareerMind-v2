@@ -484,46 +484,18 @@ frontend/
 ### 2. Layout System
 
 #### **Root Layout** (`app/layout.tsx`)
-```typescript
-// Defines global HTML structure
-// Wraps ALL pages with:
-- DOCTYPE, meta tags, fonts
-- ThemeProvider (dark/light mode toggle)
-- AuthContext (global user state)
-- Global CSS imports
-
-// Typical structure:
-<html>
-  <head>...</head>
-  <body>
-    <Providers>  {/* Theme + Auth context */}
-      {children}  {/* Page content */}
-    </Providers>
-  </body>
-</html>
-```
+- Wraps ALL pages with theme provider, auth context, and global CSS
+- Enables dark/light mode support with smooth 400-500ms transitions (configured in globals.css)
+- Initializes authentication state on app load by checking localStorage JWT
+- Uses DisableTransitionOnChange={false} in theme provider for smooth theme switching
 
 **Key Insight**: Everything passes through this layout, so global setup happens here.
 
 #### **Dashboard Layout** (`app/dashboard/layout.tsx`)
-```typescript
-// Wraps all /dashboard/* routes
-// Provides:
-- Sidebar navigation
-- Top navbar
-- Mobile responsive menu
-- Protected route check
-- User menu
-
-// Typical structure:
-<DashboardContainer>
-  <Sidebar />
-  <MainContent>
-    <Navbar />
-    {children}  {/* Specific dashboard page */}
-  </MainContent>
-</DashboardContainer>
-```
+- Wraps all `/dashboard/*` routes with persistent sidebar and top navbar
+- Provides user profile section (avatar, name, email, profile photo)
+- Handles protected route checks ensuring user is authenticated
+- Supports mobile responsive hamburger menu for smaller screens
 
 ### 3. Public Pages
 
@@ -533,11 +505,16 @@ frontend/
 - Sign up / Login CTAs
 - Feature overview
 
-#### **Hero Page** (`app/hero/page.tsx`)
-- Marketing/information page
-- Detailed feature descriptions
-- Benefits and value proposition
-- Call-to-action buttons
+#### **Hero Page** (`components/ui/Hero.tsx` & `app/hero/page.tsx`)
+- Marketing/information page with smooth motion animations using motion.dev library
+- Animated sections: hero intro, features grid, testimonials carousel, pricing cards, stats counters
+- Animations include:
+  - Scroll-triggered `whileInView` animations for staggered elements
+  - Parallax effects on background blobs using `useScroll()` and `useTransform()`
+  - Spring animations for stat counters with easing effects
+  - Staggered animations for feature cards and testimonials (0.1s delay between items)
+- All animations use `viewport={{ once: true }}` to trigger once on scroll
+- Includes feature descriptions, benefits, value proposition, and CTA buttons
 
 #### **Login Page** (`app/login/page.tsx`)
 ```typescript
@@ -705,151 +682,59 @@ return <PageContent />;
 ```
 
 #### **Weekly Tasks** (`app/dashboard/weekly-tasks/page.tsx`)
-```typescript
-// Task Management Page
-// Components:
-- Task creation form
-- Task list filtered by status:
-  - Pending
-  - In Progress
-  - Completed
-- For each task:
-  - Title
-  - Category badge
-  - Priority indicator (color-coded)
-  - Due date
-  - Progress bar (if applicable)
-  - Actions: Edit, Delete, Mark Complete
-- Sorting options:
-  - By due date
-  - By priority
-  - By status
-- Filtering options:
-  - By category
-  - By priority
-  - By status
-- Week view with upcoming tasks
-- Completion statistics
-```
+- Task creation form with title, description, category, due date, priority
+- Task list filtered by status: Pending, In Progress, Completed
+- Actions: Edit, Delete, Mark Complete
+- Sorting and filtering by due date, priority, or status
+- Shows upcoming tasks and completion statistics
 
 #### **Group Discussions** (`app/dashboard/group-discussions/page.tsx`)
-```typescript
-// Community Discussion Forum
-// Features:
-- List of discussion threads
-- Create new thread button
-- Thread view:
-  - Original post
-  - Comments/replies
-  - User avatars
-  - Timestamps
-  - Like/upvote button
-  - Reply button
-- Search discussions
-- Filter by category
-- Sort by newest/most active
-- User reputation system (optional)
-```
+- Community discussion forum with threads and replies
+- Original posts with comments, user avatars, timestamps
+- Like/upvote functionality and reply buttons
+- Search and filter discussions by category
+- Sort by newest or most active threads
 
 ### 5. Component Architecture
 
 #### **Layout Components**
 
 **AppSidebar** (`components/app-sidebar.tsx`)
-```typescript
-// Persistent left sidebar (or collapsible on mobile)
-// Contains:
-- User profile section
-  - Avatar
-  - User name
-  - User email
-- Main navigation links
-  - Dashboard
-  - Resume
-  - Interview
-  - Questions
-  - Study Materials
-  - Tasks
-  - Discussions
-- Secondary navigation (nav-main.tsx, nav-projects.tsx)
-- User menu (nav-user.tsx)
-  - Profile settings
-  - Preferences
-  - Logout
-- Theme toggle (ModeToggle.tsx)
-
-// Uses shadcn/ui Sidebar component
-```
+- Persistent left sidebar with user profile section (avatar, name, email, profile photo)
+- Flattened navigation structure with top-level links:
+  - Home, Dashboard, Resume Builder, Weekly Tasks
+  - Interview, Question Bank, Study Materials, Group Discussions
+- User menu with settings and logout
+- Displays and syncs user profile photo in real-time using `refetchUser()` hook from auth context
+- Theme toggle button (ModeToggle.tsx) with smooth dark/light mode transitions
+- Mobile-responsive collapsible design using shadcn/ui Sidebar component
 
 **Navigation Components**
-- `nav-main.tsx` - Primary navigation links
-- `nav-projects.tsx` - Project/workspace navigation
+- `nav-main.tsx` - Primary navigation links with optional URL support for section headers
+- `nav-projects.tsx` - Project/workspace navigation (integrated into top-level nav items)
 - `nav-user.tsx` - User menu (settings, logout, etc.)
 
 **Navbar** (`components/Navbar.tsx`)
-```typescript
-// Top header navigation
-// Contains:
-- App logo/title
-- Search bar
-- Notification bell
-- User quick menu
-- Responsive hamburger menu (mobile)
-
-// Responsive:
-- Desktop: Full navbar visible
-- Mobile: Hamburger menu, minimal content
-```
+- Top header navigation with app logo, search bar, notification bell
+- Hydration-safe theme toggle using mounted state check to prevent SSR/client mismatch
+- Responsive hamburger menu for mobile devices
+- Displays user profile photo that updates in real-time
 
 #### **Authentication Components**
 
 **LoginForm** (`components/login-form.tsx`)
-```typescript
-// Form handling:
-- Email input with validation
-- Password input with show/hide toggle
-- Remember me checkbox
-- Submit button (shows loading state)
-- Error message display
-- Link to signup page
-- Forgot password link
-
-// Validation:
-- Email format check
-- Password required
-- Show inline error messages
-
-// On Submit:
-- Call login API endpoint
-- Store JWT token
-- Update AuthContext
-- Redirect to dashboard
-```
+- Email input with validation and password input with show/hide toggle
+- Remember me checkbox and submit button with loading state
+- Client-side validation: email format and password required
+- Submits to `/api/auth/login`, stores JWT token, updates AuthContext, redirects to dashboard
+- Includes links to signup and forgot password pages
 
 **SignupForm** (`components/signup-form.tsx`)
-```typescript
-// Form handling:
-- Name input
-- Email input with validation
-- Password input with requirements indicator
-- Confirm password with match validation
-- Terms & conditions checkbox
-- Email verification (optional)
-- Submit button
-
-// Validation:
-- All fields required
-- Email uniqueness check (optional backend validation)
-- Password strength requirements
-- Password confirmation match
-- Terms acceptance
-
-// On Submit:
-- POST to signup endpoint
-- Auto-login with returned JWT
-- Update AuthContext
-- Redirect to dashboard
-```
+- Name, email, password, and password confirmation inputs
+- Email uniqueness validation and password strength requirements
+- Terms & conditions checkbox with inline validation
+- Uses safe JSON parsing with `.text()` first to handle response whitespace
+- Submits to `/api/auth/signup` with proper error handling and auto-login
 
 #### **Feature Components**
 
@@ -943,64 +828,17 @@ return <PageContent />;
 React Hooks encapsulate reusable logic and state management.
 
 #### **useInterview.ts**
-```typescript
-// Interview session management
-// State:
-- currentInterview: Interview object
-- currentQuestion: Question object
-- questionIndex: number (which question we're on)
-- answers: Array<Answer> (user's answers)
-- isLoading: boolean
-- error: string | null
-- timeSpent: number (seconds on current question)
-
-// Functions:
-- startInterview(type: string): void
-  - POST /interview with type
-  - Initialize interview session
-- getNextQuestion(): Question
-- getPreviousQuestion(): Question
-- submitAnswer(answer: string): void
-  - POST /interview/:id/answer
-  - Move to next question
-- completeInterview(): void
-  - POST /interview/:id/complete
-  - Calculate score, get feedback
-- getCurrentScore(): number
-- getTimeSpent(): number
-
-// Usage Example:
-const { interview, currentQuestion, submitAnswer } = useInterview();
-```
+- Manages interview session state: current question, answers, score, time spent
+- Functions: `startInterview()`, `getNextQuestion()`, `submitAnswer()`, `completeInterview()`
+- Handles POST requests to `/api/interview` endpoints
+- Returns interview object, current question, submission status, and score
 
 #### **useQuestions.ts**
-```typescript
-// Question bank management
-// State:
-- questions: Array<Question>
-- currentFilters: FilterOptions
-- searchTerm: string
-- isLoading: boolean
-- error: string | null
-- selectedCategory: string
-- selectedDifficulty: string
-
-// Functions:
-- fetchQuestions(filters): void
-  - GET /questions with filters
-- searchQuestions(term: string): void
-  - Filter questions by search
-- setCategory(category: string): void
-- setDifficulty(difficulty: string): void
-- getQuestion(id: string): Question
-- bookmarkQuestion(questionId: string): void
-  - POST to save bookmark
-- removeBookmark(questionId: string): void
-- getBookmarkedQuestions(): Array<Question>
-
-// Usage Example:
-const { questions, searchQuestions, bookmarkQuestion } = useQuestions();
-```
+- Manages question bank state: questions array, filters, search, pagination
+- Functions: `fetchQuestions()`, `searchQuestions()`, `setCategory()`, `bookmarkQuestion()`
+- Handles GET requests to `/api/questions` with filter parameters
+- Supports filtering by category, difficulty, type, and search by keyword
+- Returns questions array, filter options, and bookmark management
 
 #### **useResumeData.ts**
 ```typescript
@@ -1080,46 +918,13 @@ return isMobile ? <MobileMenu /> : <DesktopMenu />;
 ### 7. Global State Management
 
 #### **AuthContext** (`lib/auth-context.tsx`)
-```typescript
-// Global authentication state using React Context API
-// Provides:
-- user: User object (or null)
-- isAuthenticated: boolean
-- isLoading: boolean
-- error: string | null
-
-// Functions:
-- login(email: string, password: string): Promise<void>
-  - POST /auth/login
-- logout(): void
-  - Clear user state
-  - Remove JWT from storage
-- signup(userData): Promise<void>
-  - POST /auth/signup
-- refreshToken(): Promise<void>
-  - POST /auth/refresh
-- updateProfile(data): Promise<void>
-
-// Accessed via:
-const { user, isAuthenticated, login, logout } = useContext(AuthContext);
-
-// Why Context instead of Redux:
-- Simpler for auth-only state
-- No extra dependencies
-- Built into React
-- Sufficient for this use case
-- Less boilerplate
-```
-
-**AuthContext Provider in layout.tsx**:
-```typescript
-// Wraps entire app
-// Initializes by:
-1. Checking localStorage for JWT
-2. Validating token
-3. Fetching user profile
-4. Setting authenticated state
-```
+- Global authentication state with user object, authentication status, error handling
+- Functions: `login()`, `logout()`, `signup()`, `refreshToken()`, `updateProfile()`, `refetchUser()`
+- Safely parses JSON responses using `.text()` first to handle response whitespace
+- Stores `profilePhoto` in user object for navbar display and real-time updates
+- `refetchUser()` syncs latest user data across entire app (called after profile updates)
+- Initializes on app load by checking localStorage JWT and fetching current user profile
+- Uses React Context API to avoid prop drilling and provide global access
 
 ### 8. Styling System
 
@@ -1130,27 +935,17 @@ const { user, isAuthenticated, login, logout } = useContext(AuthContext);
 - Configuration in `tailwind.config.js`
 
 #### **Global Styles** (`app/globals.css`)
-```css
-- CSS reset
-- Font imports
-- Global color variables
-- Root styles
-```
+- CSS reset, font imports, global color variables
+- Smooth 400-500ms transitions on all elements for dark/light mode switching
+- Transitions applied to: background-color, color, border-color, box-shadow, opacity
+- Ensures seamless theme experience when toggling between light and dark modes
 
 #### **Dark Mode** (`components/theme-provider.tsx` & `components/ModeToggle.tsx`)
-```typescript
-// Uses next-themes library
-// Features:
-- Toggle between light/dark/system modes
-- Persists preference to localStorage
-- Instant theme switching
-- CSS variables for colors
-
-// Usage:
-<ModeToggle /> button in sidebar
-- Automatically switches all component colors
-- Uses data-theme attribute on root element
-```
+- Uses next-themes library with toggle between light/dark/system modes
+- Smooth 400-500ms transition animations during theme switching (disableTransitionOnChange=false)
+- Persists user preference to localStorage
+- Applies CSS variables for all component colors
+- Theme toggle button includes hydration safety check
 
 ### 9. Type Safety
 
@@ -1442,135 +1237,95 @@ Frontend: Move to completed section, remove from active
 ## Design Patterns
 
 ### 1. **Separation of Concerns (SoC)**
-- **Backend**: Business logic, data validation, database operations, authentication
-- **Frontend**: UI rendering, user interactions, client-side validation, state management
-- **Clear boundary**: REST API
+- **Backend**: Business logic, JWT authentication, database operations (Hono.js on port 3000)
+- **Frontend**: UI rendering, state management, API consumption (Next.js 16 with Turbopack)
+- **Communication**: RESTful API with proper base URL structure (`http://localhost:3000/api`)
+- **Authentication**: JWT tokens with Bearer scheme in Authorization header, synced JWT_SECRET between services
+- **Styling**: Tailwind CSS utility-first framework with smooth 400-500ms dark/light mode transitions
 
-**Benefit**: Each layer can be modified independently
+**Benefit**: Clear separation enables independent scaling, security, and maintenance
 
 ### 2. **Component-Based Architecture**
-- Small, single-responsibility components
-- Props-based composition
-- Reusable across multiple pages
-- shadcn/ui provides base components
+- Small, single-responsibility components with props-based composition
+- Reusable UI components from shadcn/ui (built on Radix UI)
+- Layout components (AppSidebar, Navbar, Dashboard Layout) manage page structure
+- Feature components (ResumeBuilder, InterviewPrepView) encapsulate domain logic
+- Motion animations using motion.dev library for smooth, performant visual effects
 
-**Benefit**: Code reuse, easier maintenance, testability
-
-**Example**:
-```typescript
-<Card>
-  <Card.Header>Resume</Card.Header>
-  <Card.Content>
-    <Button onClick={handleEdit}>Edit</Button>
-  </Card.Content>
-</Card>
-```
+**Benefit**: Code reuse, easier testing, maintainability, performance optimization
 
 ### 3. **Protected Routes Pattern**
-```typescript
-// Routes that require authentication
-<ProtectedRoute>
-  <Dashboard />
-</ProtectedRoute>
+- Dashboard and all protected routes check authentication status before rendering
+- Authentication checks: JWT token validity, expiration, user session state
+- Unauthorized users redirect to `/login` page
+- Profile data synced in real-time using `refetchUser()` after updates
+- Profile photo updates immediately reflected in navbar and sidebar
 
-// Protection checks:
-// 1. Is user authenticated?
-// 2. Is JWT valid and not expired?
-// 3. Redirect to /login if not
-```
-
-**Benefit**: Security, prevents unauthorized access
+**Benefit**: Security enforcement, prevents unauthorized access, maintains consistent user state
 
 ### 4. **Custom Hooks for Logic Encapsulation**
-```typescript
-// Instead of component-level logic:
-const useInterview = () => {
-  // All interview logic here
-  return { interview, submitAnswer, ... };
-};
+- Encapsulate API calls and state management: `useInterview()`, `useQuestions()`, `useResumeData()`, `useTasks()`
+- Custom hook `useMobile()` for responsive design decisions
+- Each hook handles its domain data fetching, error handling, and state updates
+- Enables reusability across multiple components without duplication
 
-// Use in any component:
-const { interview } = useInterview();
-```
-
-**Benefit**: 
-- Logic reuse across components
-- Easier testing
-- Cleaner components
-- Easy to debug
+**Benefit**: Logic reuse across components, easier testing, cleaner components, simplified debugging
 
 ### 5. **Context API for Global State**
-```typescript
-<AuthContextProvider>
-  <App />
-</AuthContextProvider>
+- AuthContext provides global access to user data and authentication functions
+- Eliminates prop drilling across component tree
+- Central place for user profile photo, authentication status, JWT token management
+- `refetchUser()` function syncs profile updates across entire app
+- Uses localStorage for JWT persistence and token recovery on app reload
 
-// Access anywhere:
-const { user, isAuthenticated } = useContext(AuthContext);
-```
-
-**Benefit**: Avoid prop drilling, global state access
+**Benefit**: Avoid prop drilling, centralized state management, cross-component data sync
 
 ### 6. **API-Driven Architecture**
-- Frontend communicates ONLY through REST API
+- Frontend communicates exclusively through REST API (`http://localhost:3000/api/`)
 - No direct database access from frontend
-- All business logic on backend
+- All business logic and data validation on backend
 - Frontend validates for UX, backend validates for security
+- Safe JSON parsing with `.text()` first approach to handle response whitespace
+- Proper Authorization headers with Bearer JWT tokens on all authenticated requests
 
-**Example**:
-```typescript
-// Frontend
-const submitAnswer = async (answer) => {
-  const response = await fetch('/api/interview/123/answer', {
-    method: 'POST',
-    body: JSON.stringify({ answer })
-  });
-  return response.json();
-};
-```
+**Benefit**: Security, scalability, separation of concerns, centralized business logic
 
 ### 7. **Modular Routing (Backend)**
-```
-routes/
-  ├── auth.ts        // All auth endpoints
-  ├── interview.ts   // All interview endpoints
-  ├── questions.ts   // All question endpoints
-  └── ...
-```
+- Feature-based file organization in routes directory: `auth.ts`, `interview.ts`, `questions.ts`, `resumes.ts`, `tasks.ts`
+- Each route module handles all CRUD operations for its domain
+- Centralized middleware in `middleware.ts` for JWT verification, CORS, error handling
+- MongoDB seeders for initial data population
+- Hono framework enables lightweight, composable routing
 
-**Benefit**: 
-- Feature-based organization
-- Easy to add/remove features
-- Clear file structure
+**Benefit**: Feature-based organization, easy to add/remove features, clear file structure, maintainability
 
 ### 8. **Token-Based Authentication (JWT)**
-- No server-side session storage
-- Stateless authentication
-- Token sent in every request header
-- Backend verifies signature
-- Self-contained user claims
+- Stateless authentication with no server-side session storage
+- JWT tokens contain user claims (id, email) and are digitally signed with shared secret
+- Synchronized JWT_SECRET between backend middleware and auth routes for consistent verification
+- Tokens sent via Authorization header with Bearer scheme on every authenticated request
+- Client stores tokens in localStorage for persistence across sessions
+- Backend validates token signature and expiration on each request
 
-**Flow**:
-```
-1. Login → Server generates JWT
-2. Store JWT on client
-3. Every request → Include JWT in header
-4. Server → Verify JWT signature
-5. Extract user info from JWT
-```
+**Flow**: Signup/Login → Generate JWT → Store in localStorage → Include in Authorization header → Backend verifies signature → Extract user info from JWT claims
 
 ### 9. **Type-First Development (TypeScript)**
-- Define types before implementation
-- Interfaces for API responses
-- Strict null checking
-- Compile-time error detection
+- Strong typing throughout codebase with strict null checking enabled
+- Type definitions for all API responses, request bodies, and database models
+- Interfaces define data contracts between frontend and backend
+- Generic types for reusable components and hooks
+- Compile-time error detection prevents many runtime issues
 
-**Benefit**: Fewer runtime errors, better IDE support, self-documenting code
+**Benefit**: Type safety, better IDE auto-completion, self-documenting code, fewer bugs, easier refactoring
 
-### 10. **Dependency Injection (Implicit)**
-- Services passed via props or context
-- Easier testing and mocking
-- Loose coupling
+### 10. **Hydration Safety & Client-Side Rendering**
+- Navbar uses mounted state check to prevent SSR/client mismatch on theme toggle
+- Theme provider configured with disableTransitionOnChange=false for smooth mode transitions
+- Smooth 400-500ms CSS transitions applied globally for dark/light mode switching
+- Components safely handle responsive behavior with custom hooks like `useMobile()`
+- Avoids hydration errors by deferring theme-dependent rendering until after client mount
+
+**Benefit**: Prevents layout shifts, smooth user experience, correct theme display on first load, no console errors
 
 ---
 
@@ -2684,6 +2439,33 @@ If scraping concerns exist, consider:
 
 ---
 
-**Document Updated**: January 29, 2026
-**Last Updated**: January 29, 2026
-**Project Status**: Active Development with expansion potential
+**Document Updated**: February 4, 2026
+**Last Updated**: February 4, 2026
+**Project Status**: Active Development with core features complete
+
+## Recent Implementation Updates (February 2026)
+
+### ✅ Completed Features
+- **Hero Page Animations**: Full motion.dev animation suite with scroll triggers, parallax effects, staggered animations, and spring-based counters
+- **Dark/Light Mode Transitions**: Smooth 400-500ms CSS transitions applied globally for seamless theme switching
+- **Profile Photo Integration**: Real-time profile photo display in navbar and sidebar with automatic sync using `refetchUser()`
+- **Navigation Reorganization**: Flattened sidebar structure with top-level navigation items (Home, Resume Builder, Weekly Tasks, Interview, etc.)
+- **Authentication Security**: Fixed JWT_SECRET synchronization between middleware and auth routes for consistent token verification
+- **Hydration Safety**: Mounted state checks in Navbar component prevent SSR/client mismatch errors
+- **Robust JSON Parsing**: Safe API response handling using `.text()` first approach to manage whitespace
+- **API Routing Correctness**: Proper base URL structure (`http://localhost:3000/api`) across all frontend API calls
+
+### 🔧 Technical Improvements
+- Theme transitions use `disableTransitionOnChange=false` in next-themes provider
+- Profile updates call `refetchUser()` to sync data across auth context, navbar, and sidebar
+- API endpoints use safe response parsing: `await response.text()` then `JSON.parse()`
+- Backend `/auth/me` endpoint returns `profilePhoto` in user object
+- All authentication headers include Bearer JWT tokens
+- Navigation components support optional URLs for section headers
+
+### 📊 Current Architecture Status
+- **Frontend**: Next.js 16.1.6 with Turbopack, Tailwind CSS, shadcn/ui, motion.dev animations
+- **Backend**: Hono.js on port 3000, MongoDB, JWT authentication, modular route organization
+- **State Management**: React Context API for auth, custom hooks for domain logic
+- **Styling**: Tailwind CSS with 400-500ms smooth transitions, OKLch color variables, dark/light mode support
+- **Animations**: motion.dev library with viewport-triggered animations, parallax effects, stagger effects, spring physics
