@@ -10,6 +10,8 @@ import interview from "./routes/interview.js"
 import aptitude from "./routes/aptitude.js"
 import companies from "./routes/companies.js"
 import experiences from "./routes/experiences.js"
+import groupDiscussions from "./routes/group-discussions.js"
+import studyMaterials from "./routes/study-materials.js"
 import { connect } from "./db.js"
 
 dotenv.config()
@@ -53,6 +55,13 @@ app.route("/api/companies", companies)
 
 // mount experiences routes under /api/experiences
 app.route("/api/experiences", experiences)
+
+// mount group discussions routes under /api/group-discussions
+app.route("/api/group-discussions", groupDiscussions)
+
+// mount study materials routes under /api/study-materials
+app.route("/api/study-materials", studyMaterials)
+
 connect().catch((err: unknown) => console.error("DB connect error", err))
 
 serve(

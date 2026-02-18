@@ -517,4 +517,145 @@ db.createCollection("interview_outcomes", {
 
 db.interview_outcomes.createIndex({ userId: 1, companyId: 1 }, { unique: true })
 
+// ===== STAGE 9: GROUP DISCUSSIONS COLLECTIONS =====
+
+// 21. Discussions
+db.createCollection("discussions", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["title", "description", "content", "category", "authorId"],
+      properties: {
+        _id: { bsonType: "objectId" },
+        title: { bsonType: "string" },
+        description: { bsonType: "string" },
+        content: { bsonType: "string" },
+        category: { bsonType: "string", enum: ["interview", "aptitude", "resume", "companies", "general"] },
+        authorId: { bsonType: "string" },
+        authorName: { bsonType: "string" },
+        authorEmail: { bsonType: "string" },
+        authorAvatar: { bsonType: ["string", "null"] },
+        tags: { bsonType: "array", items: { bsonType: "string" } },
+        viewCount: { bsonType: "int" },
+        replyCount: { bsonType: "int" },
+        likes: { bsonType: "int" },
+        likedBy: { bsonType: "array", items: { bsonType: "string" } },
+        viewedBy: { bsonType: "array", items: { bsonType: "string" } },
+        isPinned: { bsonType: "bool" },
+        createdAt: { bsonType: "date" },
+        updatedAt: { bsonType: "date" }
+      }
+    }
+  }
+})
+
+db.discussions.createIndex({ createdAt: -1 })
+db.discussions.createIndex({ category: 1, createdAt: -1 })
+db.discussions.createIndex({ authorId: 1, createdAt: -1 })
+db.discussions.createIndex({ replyCount: -1, createdAt: -1 })
+db.discussions.createIndex({ likes: -1, createdAt: -1 })
+db.discussions.createIndex({ title: "text", description: "text", content: "text" })
+db.discussions.createIndex({ tags: 1 })
+db.discussions.createIndex({ isPinned: 1, createdAt: -1 })
+
+// 22. Discussion Replies
+db.createCollection("discussion_replies", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["discussionId", "content", "authorId"],
+      properties: {
+        _id: { bsonType: "objectId" },
+        discussionId: { bsonType: "string" },
+        content: { bsonType: "string" },
+        authorId: { bsonType: "string" },
+        authorName: { bsonType: "string" },
+        authorEmail: { bsonType: "string" },
+        authorAvatar: { bsonType: ["string", "null"] },
+        likes: { bsonType: "int" },
+        likedBy: { bsonType: "array", items: { bsonType: "string" } },
+        isAnswer: { bsonType: "bool" },
+        createdAt: { bsonType: "date" },
+        updatedAt: { bsonType: "date" }
+      }
+    }
+  }
+})
+
+db.discussion_replies.createIndex({ discussionId: 1, createdAt: 1 })
+db.discussion_replies.createIndex({ authorId: 1, createdAt: -1 })
+db.discussion_replies.createIndex({ likes: -1 })
+db.discussion_replies.createIndex({ discussionId: 1, isAnswer: 1 })
+
+// ===== STAGE 10: STUDY MATERIALS COLLECTIONS =====
+
+// 23. Study Materials
+db.createCollection("study_materials", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["title", "description", "category", "type", "difficulty", "author", "url"],
+      properties: {
+        _id: { bsonType: "objectId" },
+        title: { bsonType: "string" },
+        description: { bsonType: "string" },
+        category: { bsonType: "string", enum: ["Data Structures", "Algorithms", "System Design", "Database Design", "Web Development", "Mobile Development", "Cloud Computing", "DevOps", "AI/ML", "Soft Skills", "Communication", "Leadership", "Time Management", "Problem Solving"] },
+        type: { bsonType: "string", enum: ["guide", "video", "article", "documentation", "book", "course"] },
+        difficulty: { bsonType: "string", enum: ["Beginner", "Intermediate", "Advanced"] },
+        author: { bsonType: "string" },
+        source: { bsonType: "string" },
+        url: { bsonType: "string" },
+        duration: { bsonType: ["string", "null"] },
+        tags: { bsonType: "array", items: { bsonType: "string" } },
+        thumbnail: { bsonType: ["string", "null"] },
+        views: { bsonType: "int" },
+        rating: { bsonType: "double" },
+        ratingCount: { bsonType: "int" },
+        savedCount: { bsonType: "int" },
+        savedBy: { bsonType: "array", items: { bsonType: "string" } },
+        viewedBy: { bsonType: "array", items: { bsonType: "string" } },
+        createdAt: { bsonType: "date" },
+        updatedAt: { bsonType: "date" }
+      }
+    }
+  }
+})
+
+db.study_materials.createIndex({ createdAt: -1 })
+db.study_materials.createIndex({ category: 1, createdAt: -1 })
+db.study_materials.createIndex({ type: 1 })
+db.study_materials.createIndex({ difficulty: 1 })
+db.study_materials.createIndex({ rating: -1, createdAt: -1 })
+db.study_materials.createIndex({ views: -1 })
+db.study_materials.createIndex({ savedCount: -1 })
+db.study_materials.createIndex({ title: "text", description: "text" })
+db.study_materials.createIndex({ tags: 1 })
+db.study_materials.createIndex({ category: 1, type: 1, difficulty: 1 })
+
+// 24. Study Material Reviews
+db.createCollection("study_material_reviews", {
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      required: ["materialId", "userId", "rating"],
+      properties: {
+        _id: { bsonType: "objectId" },
+        materialId: { bsonType: "objectId" },
+        userId: { bsonType: "string" },
+        userName: { bsonType: "string" },
+        userEmail: { bsonType: "string" },
+        rating: { bsonType: "double" },
+        reviewText: { bsonType: "string" },
+        helpfulCount: { bsonType: "int" },
+        createdAt: { bsonType: "date" }
+      }
+    }
+  }
+})
+
+db.study_material_reviews.createIndex({ materialId: 1, createdAt: -1 })
+db.study_material_reviews.createIndex({ userId: 1, createdAt: -1 })
+db.study_material_reviews.createIndex({ rating: 1 })
+db.study_material_reviews.createIndex({ materialId: 1, userId: 1 }, { unique: true })
+
 console.log("✅ All MongoDB collections and indexes created successfully!")
