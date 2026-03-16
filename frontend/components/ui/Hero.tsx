@@ -13,19 +13,14 @@ import {
   Users, 
   Calendar,
   Zap,
-  BarChart3,
   CheckCircle,
-  Sparkles,
   Target,
   Lightbulb,
   TrendingUp,
-  Award,
-  MessageSquare,
-  Clock,
 } from 'lucide-react'
 import Link from 'next/link'
-import { useState, useRef } from 'react'
-import { motion, useScroll, useTransform, inView } from 'motion/react'
+import { useState } from 'react'
+import { motion, useScroll, useTransform } from 'motion/react'
 
 export function Hero() {
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null)
@@ -114,95 +109,7 @@ export function Hero() {
     },
   ]
 
-  const stats = [
-    { number: '10K+', label: 'Questions Practiced' },
-    { number: '95%', label: 'Success Rate' },
-    { number: '50K+', label: 'Active Users' },
-    { number: '6', label: 'Top Companies' },
-  ]
 
-  const companies = [
-    { name: 'Google', icon: '🔍' },
-    { name: 'Amazon', icon: '📦' },
-    { name: 'Microsoft', icon: '⚙️' },
-    { name: 'Accenture', icon: '🎯' },
-    { name: 'TCS', icon: '🏢' },
-    { name: 'Infosys', icon: '💼' },
-  ]
-
-  const testimonials = [
-    {
-      author: 'Priya Sharma',
-      role: 'Software Engineer at Google',
-      content: 'CareerMind helped me crack the Google interview. The AI mock interviews were incredibly realistic and the feedback was spot-on.',
-      rating: 5
-    },
-    {
-      author: 'Rajesh Kumar',
-      role: 'Senior Developer at Amazon',
-      content: 'The resume builder saved me so much time, and the question bank is comprehensive. Highly recommended for anyone preparing for tech interviews.',
-      rating: 5
-    },
-    {
-      author: 'Anjali Patel',
-      role: 'Product Manager at Microsoft',
-      content: 'From resume to final interview, CareerMind has everything. The structured approach and daily tasks kept me motivated.',
-      rating: 5
-    },
-  ]
-
-  const pricingPlans = [
-    {
-      name: 'Starter',
-      price: '₹499',
-      period: '/month',
-      description: 'Perfect for beginners',
-      features: [
-        'Access to 100+ questions',
-        '2 mock interviews/month',
-        'Resume builder (basic)',
-        'Community access',
-        'Email support'
-      ],
-      cta: 'Get Started',
-      highlighted: false
-    },
-    {
-      name: 'Professional',
-      price: '₹999',
-      period: '/month',
-      description: 'For serious job seekers',
-      features: [
-        'Access to all 1000+ questions',
-        'Unlimited mock interviews',
-        'Advanced resume builder',
-        'Study materials access',
-        'Priority email support',
-        'Weekly task planning',
-        'Interview transcripts'
-      ],
-      cta: 'Start Free Trial',
-      highlighted: true
-    },
-    {
-      name: 'Elite',
-      price: '₹1,999',
-      period: '/month',
-      description: 'Premium preparation',
-      features: [
-        'Everything in Professional',
-        '1-on-1 mentoring (4 sessions)',
-        'Company-specific prep paths',
-        'Advanced analytics',
-        'Custom feedback reports',
-        'Priority live chat support',
-        'Career counseling',
-        'Salary negotiation guide'
-      ],
-      cta: 'Start Free Trial',
-      highlighted: false
-    },
-  ]
 
   return (
     <div className="w-full">
@@ -231,13 +138,6 @@ export function Hero() {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            {/* Badge */}
-            <motion.div variants={itemVariants}>
-              <div className="inline-flex items-center gap-2 bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-200 px-4 py-2 rounded-full text-sm font-medium mb-8 border border-blue-200 dark:border-blue-800">
-                <Sparkles className="h-4 w-4" />
-                Powered by Gemini AI
-              </div>
-            </motion.div>
 
             {/* Main Headline */}
             <motion.h1 
@@ -290,31 +190,7 @@ export function Hero() {
               </motion.div>
             </motion.div>
 
-            {/* Stats */}
-            <motion.div 
-              variants={containerVariants}
-              className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-gray-200 dark:border-gray-800"
-            >
-              {stats.map((stat, idx) => (
-                <motion.div 
-                  key={idx} 
-                  variants={itemVariants}
-                  className="text-center"
-                  whileHover={{ scale: 1.1 }}
-                >
-                  <motion.div 
-                    className="text-3xl md:text-4xl font-bold text-blue-600 dark:text-blue-400 mb-2"
-                    initial={{ opacity: 0, scale: 0 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.5 + idx * 0.1, duration: 0.5, type: "spring" }}
-                  >
-                    {stat.number}
-                  </motion.div>
-                  <div className="text-gray-600 dark:text-gray-400">{stat.label}</div>
-                </motion.div>
-              ))}
-            </motion.div>
+
           </motion.div>
         </div>
       </section>
@@ -388,39 +264,7 @@ export function Hero() {
         </div>
       </section>
 
-      {/* Companies Section */}
-      <section className="py-20 dark:bg-slate-900">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-12"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6 }}
-          >
-            <h3 className="text-2xl font-bold mb-4 dark:text-white">Trusted by Candidates Preparing for</h3>
-          </motion.div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {companies.map((company, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, scale: 0.5 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                whileHover={{ scale: 1.1, rotate: [0, -5, 5, -5, 0] }}
-              >
-                <Card className="flex items-center justify-center h-24 dark:border-gray-800 dark:bg-slate-800/50 hover:shadow-lg transition-shadow">
-                  <CardContent className="flex flex-col items-center gap-2 p-4">
-                    <span className="text-3xl">{company.icon}</span>
-                    <span className="text-sm font-semibold text-center dark:text-gray-300">{company.name}</span>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* How It Works Section */}
       <section className="py-24 bg-gray-50 dark:bg-slate-900/50">
@@ -571,180 +415,6 @@ export function Hero() {
               </Card>
             </TabsContent>
           </Tabs>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-24 dark:bg-slate-900">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Badge className="mb-4 bg-pink-100 dark:bg-pink-950 text-pink-800 dark:text-pink-200 hover:bg-pink-100 dark:hover:bg-pink-950">
-              <MessageSquare className="h-3 w-3 mr-2" />
-              Success Stories
-            </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Loved by Career Changers</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400">
-              Join thousands who landed their dream jobs
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: idx * 0.2 }}
-                whileHover={{ y: -10, transition: { duration: 0.3 } }}
-              >
-                <Card className="dark:border-gray-800 dark:bg-slate-800/50 h-full">
-                  <CardContent className="pt-6">
-                    <motion.div 
-                      className="flex items-center gap-1 mb-4"
-                      initial={{ opacity: 0 }}
-                      whileInView={{ opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.3 + idx * 0.2, duration: 0.5 }}
-                    >
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <motion.span 
-                          key={i}
-                          initial={{ scale: 0, rotate: -180 }}
-                          whileInView={{ scale: 1, rotate: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.5 + idx * 0.2 + i * 0.1, type: "spring", stiffness: 200 }}
-                        >
-                          ⭐
-                        </motion.span>
-                      ))}
-                    </motion.div>
-                    <p className="text-gray-700 dark:text-gray-300 mb-4 italic">"{testimonial.content}"</p>
-                    <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                      <p className="font-semibold dark:text-white">{testimonial.author}</p>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.role}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section className="py-24 bg-gray-50 dark:bg-slate-900/50">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Badge className="mb-4 bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-200 hover:bg-orange-100 dark:hover:bg-orange-950">
-              <Award className="h-3 w-3 mr-2" />
-              Pricing
-            </Badge>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 dark:text-white">Plans for Every Stage</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Choose the plan that fits your preparation journey
-            </p>
-          </motion.div>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {pricingPlans.map((plan, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.5, delay: idx * 0.15 }}
-                whileHover={{ 
-                  scale: plan.highlighted ? 1.08 : 1.05, 
-                  transition: { duration: 0.3 } 
-                }}
-              >
-                <Card
-                  className={`transition-all duration-300 flex flex-col ${
-                    plan.highlighted
-                      ? 'ring-2 ring-blue-600 dark:ring-blue-400 shadow-2xl dark:bg-slate-800 dark:border-blue-500'
-                      : 'dark:border-gray-800 dark:bg-slate-800/50'
-                  }`}
-                >
-                  {plan.highlighted && (
-                    <motion.div 
-                      className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-4 py-2 rounded-t-lg dark:from-blue-500 dark:to-purple-500"
-                      initial={{ opacity: 0, y: -20 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: 0.5, duration: 0.5 }}
-                    >
-                      <span className="text-sm font-semibold">Most Popular</span>
-                    </motion.div>
-                  )}
-                  <CardHeader>
-                    <CardTitle className="dark:text-white">{plan.name}</CardTitle>
-                    <CardDescription className="dark:text-gray-400">{plan.description}</CardDescription>
-                    <div className="mt-4">
-                      <span className="text-4xl font-bold dark:text-white">{plan.price}</span>
-                      <span className="text-gray-600 dark:text-gray-400">{plan.period}</span>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="flex-grow space-y-6">
-                    <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                      <Button
-                        asChild
-                        className={`w-full ${
-                          plan.highlighted
-                            ? 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 dark:from-blue-500 dark:to-purple-500 dark:hover:from-blue-600 dark:hover:to-purple-600 text-white'
-                            : 'dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-900'
-                        }`}
-                        variant={plan.highlighted ? 'default' : 'outline'}
-                      >
-                        <Link href="/signup">
-                          {plan.cta}
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </motion.div>
-                    <ul className="space-y-3">
-                      {plan.features.map((feature, fidx) => (
-                        <motion.li 
-                          key={fidx} 
-                          className="flex items-start gap-3"
-                          initial={{ opacity: 0, x: -20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: 0.3 + idx * 0.15 + fidx * 0.05 }}
-                        >
-                          <CheckCircle className="h-5 w-5 text-green-500 dark:text-green-400 flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-gray-700 dark:text-gray-300">{feature}</span>
-                        </motion.li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-
-          <motion.div 
-            className="text-center mt-12"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 1, duration: 0.5 }}
-          >
-            <p className="text-gray-600 dark:text-gray-400 mb-4">All plans come with a 7-day free trial</p>
-            <p className="text-sm text-gray-500 dark:text-gray-500">No credit card required • Cancel anytime</p>
-          </motion.div>
         </div>
       </section>
 

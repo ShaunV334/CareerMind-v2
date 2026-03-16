@@ -39,6 +39,7 @@ export default function AILiveInterview({ companyId, userId, role = 'Software En
   const [isLoading, setIsLoading] = useState(false)
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const audioChunksRef = useRef<Blob[]>([])
+  const recognitionRef = useRef<any>(null)
 
   // Timer effect
   useEffect(() => {
@@ -103,26 +104,60 @@ export default function AILiveInterview({ companyId, userId, role = 'Software En
 
   const startRecording = useCallback(async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const mediaRecorder = new MediaRecorder(stream)
-      mediaRecorderRef.current = mediaRecorder
-      audioChunksRef.current = []
-
-      mediaRecorder.ondataavailable = (event: BlobEvent) => {
-        audioChunksRef.current.push(event.data)
+      // Initialize Web Speech API
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+      
+      if (!SpeechRecognition) {
+        alert('Speech Recognition not supported in your browser')
+        return
       }
 
-      mediaRecorder.start()
-      setIsRecording(true)
+      const recognition = new SpeechRecognition()
+      recognitionRef.current = recognition
+
+      recognition.continuous = true
+      recognition.interimResults = true
+      recognition.language = 'en-US'
+
+      let interimTranscript = ''
+
+      recognition.onstart = () => {
+        setIsRecording(true)
+        console.log('Speech recognition started')
+      }
+
+      recognition.onresult = (event: any) => {
+        interimTranscript = ''
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript
+          if (event.results[i].isFinal) {
+            setInput((prev) => prev + transcript + ' ')
+          } else {
+            interimTranscript += transcript
+          }
+        }
+      }
+
+      recognition.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error)
+        alert(`Error: ${event.error}`)
+      }
+
+      recognition.onend = () => {
+        setIsRecording(false)
+        console.log('Speech recognition ended')
+      }
+
+      recognition.start()
     } catch (error) {
-      console.error('Error accessing microphone:', error)
-      alert('Please allow microphone access to use voice input')
+      console.error('Error starting speech recognition:', error)
+      alert('Error starting voice input')
     }
   }, [])
 
   const stopRecording = useCallback(() => {
-    if (mediaRecorderRef.current) {
-      mediaRecorderRef.current.stop()
+    if (recognitionRef.current) {
+      recognitionRef.current.stop()
       setIsRecording(false)
     }
   }, [])
