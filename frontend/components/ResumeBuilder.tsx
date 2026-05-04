@@ -136,7 +136,7 @@ const ResumeBuilder: React.FC<ResumeBuilderProps> = ({ initialResume, onBack, re
   };
 
   const handleSaveResume = async () => {
-    if (!resumeData.name || resumeData.name === 'Untitled Resume') {
+    if (!resumeData.name) {
       setSaveMessage({ type: 'error', text: 'Please give your resume a name' });
       return;
     }

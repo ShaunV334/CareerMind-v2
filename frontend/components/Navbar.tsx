@@ -76,19 +76,19 @@ export function Navbar() {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/pricing" asChild>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink asChild>
+                <Link href="/pricing" className={navigationMenuTriggerStyle()}>
                   Pricing
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/about" asChild>
-                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+              <NavigationMenuLink asChild>
+                <Link href="/about" className={navigationMenuTriggerStyle()}>
                   About
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>

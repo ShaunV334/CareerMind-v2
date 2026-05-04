@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { FileText, Briefcase, Users, BookOpen, HelpCircle, ListTodo, BarChart3, Zap, Lightbulb, Brain } from "lucide-react"
+import { FileText, Briefcase, Users, BookOpen, HelpCircle, ListTodo, BarChart3, Zap, Brain } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
@@ -117,33 +117,6 @@ const data = {
         {
           title: "Accenture",
           url: "/dashboard/interview-prep/accenture",
-        },
-      ],
-    },
-    {
-      title: "Interview Exp.",
-      url: "/dashboard/interviews",
-      icon: Lightbulb,
-      items: [
-        {
-          title: "All Experiences",
-          url: "/dashboard/interviews",
-        },
-        {
-          title: "Google",
-          url: "/dashboard/interviews/google",
-        },
-        {
-          title: "Amazon",
-          url: "/dashboard/interviews/amazon",
-        },
-        {
-          title: "Microsoft",
-          url: "/dashboard/interviews/microsoft",
-        },
-        {
-          title: "Success Stories",
-          url: "/dashboard/interviews/success-stories",
         },
       ],
     },
